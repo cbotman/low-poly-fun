@@ -1,0 +1,19 @@
+
+html {
+	margin: 0px;
+	padding: 0px;
+}
+
+body {
+	background: #FAEED4;
+	border: none;
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+}
+
+#container {
+	position: absolute;
+	left:0px;
+	top:0px;
+}
