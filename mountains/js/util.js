@@ -1,5 +1,7 @@
 
-function diamond_square( side_length, seed, variation ) {
+Botman.Util = {}; // Singleton
+
+Botman.Util.diamond_square = function( side_length, seed, variation ) {
 
 	//
 	// Ensure side_length is a power of 2 + 1

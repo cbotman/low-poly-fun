@@ -1,5 +1,4 @@
 
 // Declare the global namespace
-var P = window.P || {};
+var Botman = window.Botman || {};
 
-P.Ecs = {};
