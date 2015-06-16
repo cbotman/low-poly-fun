@@ -1,21 +1,24 @@
 
 Botman.Main = function() {
+
+	// Self reference for events
+	this.self = this;
+
+	// Internal state
+	this.is_initiated = false;
+
+	// Three JS properties
+	this.container = null;
+	this.scene = null;
+	this.camera = null;
+	this.renderer = null;
+	this.controls = null;
+	this.stats = null;
+	this.keyboard = new KeyboardState();
+	this.clock = new THREE.Clock();
+
+	// World properties (i.e. the world/scene we're drawing)
 };
-
-// Internal state
-Botman.Main.prototype.is_initiated = false;
-
-// Three JS properties
-Botman.Main.prototype.container = null;
-Botman.Main.prototype.scene = null;
-Botman.Main.prototype.camera = null;
-Botman.Main.prototype.renderer = null;
-Botman.Main.prototype.controls = null;
-Botman.Main.prototype.stats = null;
-Botman.Main.prototype.keyboard = new KeyboardState();
-Botman.Main.prototype.clock = new THREE.Clock();
-
-// World properties (i.e. the world/scene we're drawing)
 
 Botman.Main.prototype.init = function() {
 
@@ -63,10 +66,63 @@ Botman.Main.prototype.init = function() {
 
 	//
 	// Container
+	this.container = document.getElementById( 'container' );
+	this.container.appendChild( this.renderer.domElement );
+
+	//
+	// Events
+
+	// automatically resize renderer
+	THREEx.WindowResize( this.renderer, this.camera );
+
+	//
+	// Controls
+
+	// toggle full-screen on given key press
+	THREEx.FullScreen.bindKey( { charCode: 'm'.charCodeAt( 0 ) } );
+
+	// move mouse and: left   click to rotate,
+	//                 middle click to zoom,
+	//                 right  click to pan
+	this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
+
+	//
+	// Stats
+	this.stats = new Stats();
+	this.stats.domElement.style.position = 'absolute';
+	this.stats.domElement.style.bottom = '0px';
+	this.stats.domElement.style.zIndex = 100;
+	this.container.appendChild( this.stats.domElement );
+
+	//
+	// Start animation loop
+	this.animate();
 
 	//
 	// Done
 	this.is_initiated = true;
+};
+
+Botman.Main.prototype.animate = function() {
+
+	// TODO: fix reference issue
+	//requestAnimationFrame( self.animate );
+	this.render();
+	this.update();
+};
+
+Botman.Main.prototype.render = function() {
+
+	this.renderer.render( this.scene, this.camera );
+};
+
+Botman.Main.prototype.update = function() {
+
+	// delta = change in time since last call (in seconds)
+	var delta = this.clock.getDelta();
+
+	this.controls.update();
+	this.stats.update();
 };
 
 Botman.Main.prototype.recreate = function() {
@@ -81,4 +137,11 @@ Botman.Main.prototype.recreate = function() {
 	//var surface_points = Util.diamond_square( ... );
 	//Botman.LandLayer.draw( surface_points, scene );
 	//Botman.TreeLayer.draw( surface_points, scene );
+
+	// create a set of coordinate axes to help orient user
+	//    specify length in pixels in each direction
+	var axes = new THREE.AxisHelper( 100 ); // X = Red, Y = Green, Z = Blue
+	this.scene.add( axes );
+
+	this.render();
 };
