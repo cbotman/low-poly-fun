@@ -25,7 +25,6 @@
 	<script type="text/javascript" src="libs/THREEx.WindowResize.js"></script>
 
 	<script type="text/javascript" src="js/_namespaces.js"></script>
-	<script type="text/javascript" src="js/land-layer.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 	<script type="text/javascript" src="js/util.js"></script>
 	<script type="text/javascript">

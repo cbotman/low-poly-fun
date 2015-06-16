@@ -30,7 +30,6 @@ body {
 	color: white;
 	cursor: pointer;
 	display: inline-block;
-	font-weight: bold;
 	padding: 7px 14px;
 }
 

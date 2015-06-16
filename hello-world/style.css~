@@ -18,23 +18,10 @@ body {
 	top:0px;
 }
 
-#ui {
-	position: relative;
-	text-align: center;
-	padding: 12px 12px;
-}
-
 #ui .button {
 	border: solid 2px white;
-	border-radius: 4px;
 	color: white;
-	cursor: pointer;
 	display: inline-block;
-	font-weight: bold;
-	padding: 7px 14px;
-}
-
-#ui .button:hover {
-	background: #eaeaea;
+	padding: 6px 12px;
 }
 

@@ -1,4 +1,9 @@
 
+/**
+ TODO:
+ - create a canvas texture and apply to landscape
+*/
+
 /*
 noise.seed( Math.random() );
 var points = new Array( 20 );
