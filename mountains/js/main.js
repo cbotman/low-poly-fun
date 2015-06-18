@@ -99,8 +99,8 @@ Botman.Main.prototype.init = function() {
 	
 	//
 	// Axis
-	//var axes = new THREE.AxisHelper( 100 ); // X = Red, Y = Green, Z = Blue
-	//this.scene.add( axes );
+	var axes = new THREE.AxisHelper( 100 ); // X = Red, Y = Green, Z = Blue
+	this.scene.add( axes );
 	
 	//
 	// Lighting
@@ -171,7 +171,7 @@ Botman.Main.prototype.recreate = function() {
 	var land = this.land_layer.draw( 'land' );
 	land.name = 'land';
 	land.translateX( this.land_layer.get_center_x() * -1 );
-	land.translateZ( this.land_layer.get_center_y() * -1 );
+	land.translateZ( this.land_layer.get_center_z() * -1 );
 	this.scene.add( land );
 
 	this.render();

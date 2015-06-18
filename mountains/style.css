@@ -36,6 +36,7 @@ body {
 }
 
 #ui .button:hover {
-	background: #eaeaea;
+	background: #ED5D30;
+	border-color: #ED5D30;
 }
 
