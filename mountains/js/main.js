@@ -20,6 +20,7 @@ Botman.Main = function() {
 	// World properties (i.e. the world/scene we're drawing)
 	this.surface_points = [];
 	this.land = null;
+	this.land_layer = null;
 };
 
 Botman.Main.prototype.init = function() {
@@ -160,17 +161,18 @@ Botman.Main.prototype.recreate = function() {
 	this.init();
 
 	// Clear existing world, if there is one. Don't want to reset the camera position, etc.
-	this.scene.remove( this.land );
-	
-	// Add lights
+	this.scene.remove( this.scene.getObjectByName( 'land' ) );
 
 	// Create new world
-	// Kind of want to instantiate a new LandLayer with an options object, setting things like tile width
-	var surface_points = Botman.LandLayer.generate_surface_points();
-	this.land = Botman.LandLayer.draw( surface_points );
-	this.land.translateX( ( surface_points.length - 1 ) * -10 / 2 );
-	this.land.translateZ( ( surface_points[0].length - 1 ) * -10 / 2 );
-	this.scene.add( this.land );
+
+	// Land
+	this.land_layer = new Botman.LandLayer( {} );
+	this.land_layer.compute_surface_points();
+	var land = this.land_layer.draw( 'land' );
+	land.name = 'land';
+	land.translateX( this.land_layer.get_center_x() * -1 );
+	land.translateZ( this.land_layer.get_center_y() * -1 );
+	this.scene.add( land );
 
 	this.render();
 };
