@@ -6,6 +6,7 @@ Botman.LandLayer = function( options ) {
 
 	// State
 	this.surface_points = [];
+	this.highest_point = 0;
 };
 
 Botman.LandLayer.default_options = {
@@ -16,6 +17,28 @@ Botman.LandLayer.default_options = {
 Botman.LandLayer.prototype.compute_surface_points = function() {
 
 	var points = Botman.Util.diamond_square( 17, 0, 7 );
+
+	// Trim off the edge points as they tend to be spikes with diamond square
+	var trimmed_points = [];
+	for ( var x = 1; x < points.length - 1; x++ ) {
+
+		trimmed_points.push( [] );
+		for ( var y = 1; y < points[x].length - 1; y++ ) {
+		
+			trimmed_points[x - 1].push( points[x - 1][y - 1] );
+		}
+	}
+	points = trimmed_points;
+	
+	/*
+	// reference points for debugging
+	points = [
+		[3, 5, 10],
+		[2, 5, 10],
+		[2, 6, 11]
+	];
+	*/
+	
 	var min = 999;
 	for ( var x = 0; x < points.length; x++ ) {
 
@@ -25,6 +48,10 @@ Botman.LandLayer.prototype.compute_surface_points = function() {
 			if ( points[x][y] < min ) {
 		
 				min = points[x][y];
+			}
+			if ( points[x][y] > this.highest_point ) {
+			
+				this.highest_point = points[x][y];
 			}
 		}
 	}
@@ -38,16 +65,8 @@ Botman.LandLayer.prototype.compute_surface_points = function() {
 			points[x][y] -= min;
 		}
 	}
+	this.highest_point -= min;
 
-	// reference points for debugging
-	points = [
-				/*X-*/
-			[15, 20, 40],
-	/*Z-*/	[10, 20, 40],	/*Z+*/
-			[11, 22, 43]
-				/*X+*/
-	];
-	console.log(points);
 	this.surface_points = points;
 };
 
@@ -126,7 +145,7 @@ Botman.LandLayer.prototype.draw = function() {
 
 	// X-
 	var points = this.surface_points[0];
-	var side = this._drawSide( points, this.options.tile_width_z );
+	var side = this._drawSide( points, this.highest_point, this.options.tile_width_z );
 	side.rotation.y = 270 * Math.PI / 180; // Rotate by X degrees
 	side.position.z += this.get_center_z(); // Move into position
 	land.add( side );
@@ -134,7 +153,7 @@ Botman.LandLayer.prototype.draw = function() {
 	// X+
 	var points = this.surface_points[this.surface_points.length - 1];
 	points = points.slice().reverse(); // Flip points. Need to slide so original points data isn't altered
-	side = this._drawSide( points, this.options.tile_width_z );
+	side = this._drawSide( points, this.highest_point, this.options.tile_width_z );
 	side.rotation.y = 90 * Math.PI / 180; // Rotate by X degrees
 	side.position.x += this.get_width_x(); // Move into position
 	side.position.z += this.get_center_z(); 
@@ -147,7 +166,7 @@ Botman.LandLayer.prototype.draw = function() {
 
 		points.push( this.surface_points[i][0] );
 	}
-	side = this._drawSide( points, this.options.tile_width_x );
+	side = this._drawSide( points, this.highest_point, this.options.tile_width_x );
 	side.rotation.y = 180 * Math.PI / 180; // Rotate by X degrees
 	side.position.x += this.get_center_x(); // Move into position
 	land.add( side );
@@ -158,7 +177,7 @@ Botman.LandLayer.prototype.draw = function() {
 	
 		points.push( this.surface_points[i][this.surface_points[i].length - 1] );
 	}
-	side = this._drawSide( points, this.options.tile_width_x );
+	side = this._drawSide( points, this.highest_point, this.options.tile_width_x );
 	side.rotation.y = 0 * Math.PI / 180; // Rotate by X degrees. In this case, none needed.
 	side.position.x += this.get_center_x(); // Move into position
 	side.position.z += this.get_width_z();
@@ -166,47 +185,80 @@ Botman.LandLayer.prototype.draw = function() {
 	
 	//
 	// Draw base
-	// TODO...
+	
+	var darkSideMaterial = new THREE.MeshLambertMaterial( { 
+		color: 0x614126, 
+		shading: THREE.FlatShading
+	} );
+	var geometry = new THREE.PlaneGeometry( this.get_width_x(), this.get_width_z(), 1 );
+	var floor = new THREE.Mesh( geometry, darkSideMaterial );
+	floor.rotation.x = Math.PI / 2;
+	floor.position.x = this.get_center_x();
+	floor.position.z = this.get_center_z();
+	floor.position.y = -this.highest_point / 2;
+	land.add( floor );
 
 	return land;
 };
 
-Botman.LandLayer.prototype._drawSide = function( points, tile_width ) {
+Botman.LandLayer.prototype._drawSide = function( points, global_max_point, tile_width ) {
 
 	var side = new THREE.Object3D();
 	
-	//
-	// Draw light section
-	
 	var lightSideMaterial = new THREE.MeshLambertMaterial( { 
+		color: 0x8E5E39, 
+		shading: THREE.FlatShading
+	} );
+	var darkSideMaterial = new THREE.MeshLambertMaterial( { 
 		color: 0x614126, 
 		shading: THREE.FlatShading
 	} );
+	
 	// Offset all the points so the center point is in the middle
 	var left_offset = ( points.length - 1 ) * tile_width / 2 * -1;
 	for ( var i = 0; i < points.length - 1; i++ ) {
 		
+		//
+		// Draw top soil layer
+		
 		var left_x = left_offset + ( tile_width * i );
 		var right_x = left_x + tile_width;
-		var left_y = points[i];
-		var right_y = points[i + 1];
+		var top_left_y = points[i];
+		var top_right_y = points[i + 1];
+		
+		var middle_left_y = ( top_left_y - global_max_point ) / 3;
+		var middle_right_y = ( top_right_y - global_max_point ) / 3;
 		
 		var geometry = new THREE.Geometry();
-		geometry.vertices.push( new THREE.Vector3( left_x, 0, 0 ) );
-		geometry.vertices.push( new THREE.Vector3( right_x, right_y, 0 ) );
-		geometry.vertices.push( new THREE.Vector3( left_x, left_y, 0 ) );
-		geometry.vertices.push( new THREE.Vector3( right_x, 0, 0 ) );
+		geometry.vertices.push( new THREE.Vector3( left_x, middle_left_y, 0 ) );
+		geometry.vertices.push( new THREE.Vector3( right_x, top_right_y, 0 ) );
+		geometry.vertices.push( new THREE.Vector3( left_x, top_left_y, 0 ) );
+		geometry.vertices.push( new THREE.Vector3( right_x, middle_right_y, 0 ) );
 		geometry.faces.push( new THREE.Face3( 0, 1, 2 ) );
 		geometry.faces.push( new THREE.Face3( 0, 3, 1 ) );
 		geometry.computeFaceNormals();
 
 		var squareMesh = new THREE.Mesh( geometry, lightSideMaterial );
 		side.add( squareMesh );
+		
+		//
+		// Draw bottom soil layer
+
+		var bottom_y = -global_max_point / 2;
+		
+		geometry = new THREE.Geometry();
+		geometry.vertices.push( new THREE.Vector3( left_x, bottom_y, 0 ) );
+		geometry.vertices.push( new THREE.Vector3( right_x, middle_right_y, 0 ) );
+		geometry.vertices.push( new THREE.Vector3( left_x, middle_left_y, 0 ) );
+		geometry.vertices.push( new THREE.Vector3( right_x, bottom_y, 0 ) );
+		geometry.faces.push( new THREE.Face3( 0, 1, 2 ) );
+		geometry.faces.push( new THREE.Face3( 0, 3, 1 ) );
+		geometry.computeFaceNormals();
+
+		squareMesh = new THREE.Mesh( geometry, darkSideMaterial );
+		side.add( squareMesh );
+
 	}
-	
-	//
-	// Draw dark section
-	// TODO...
 	
 	return side;
 };

@@ -46,10 +46,7 @@ Botman.Main.prototype.init = function() {
 	var far = 20000;
 	this.camera = new THREE.PerspectiveCamera( view_angle, aspect, near, far );
 	this.scene.add( this.camera );
-	// the camera defaults to position (0,0,0)
-	// so pull it back (z) and up (y) and set the angle towards the scene origin
-	//this.camera.position.set( 200, 100, 100 );
-	this.camera.position.set( 0, 100, 100 );
+	this.camera.position.set( 200, 110, 100 );
 	this.camera.lookAt( this.scene.position );
 
 	//
@@ -101,7 +98,7 @@ Botman.Main.prototype.init = function() {
 	//
 	// Axis
 	var axes = new THREE.AxisHelper( 100 ); // X = Red, Y = Green, Z = Blue
-	this.scene.add( axes );
+	//this.scene.add( axes );
 	
 	//
 	// Lighting
@@ -169,7 +166,7 @@ Botman.Main.prototype.recreate = function() {
 	// Land
 	this.land_layer = new Botman.LandLayer( {
 		tile_width_x: 10,
-		tile_width_z: 20
+		tile_width_z: 10
 	} );
 	this.land_layer.compute_surface_points();
 	var land = this.land_layer.draw();
