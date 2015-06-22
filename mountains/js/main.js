@@ -48,7 +48,8 @@ Botman.Main.prototype.init = function() {
 	this.scene.add( this.camera );
 	// the camera defaults to position (0,0,0)
 	// so pull it back (z) and up (y) and set the angle towards the scene origin
-	this.camera.position.set( 200, 100, 100 );
+	//this.camera.position.set( 200, 100, 100 );
+	this.camera.position.set( 0, 100, 100 );
 	this.camera.lookAt( this.scene.position );
 
 	//
@@ -166,9 +167,12 @@ Botman.Main.prototype.recreate = function() {
 	// Create new world
 
 	// Land
-	this.land_layer = new Botman.LandLayer( {} );
+	this.land_layer = new Botman.LandLayer( {
+		tile_width_x: 10,
+		tile_width_z: 20
+	} );
 	this.land_layer.compute_surface_points();
-	var land = this.land_layer.draw( 'land' );
+	var land = this.land_layer.draw();
 	land.name = 'land';
 	land.translateX( this.land_layer.get_center_x() * -1 );
 	land.translateZ( this.land_layer.get_center_z() * -1 );
