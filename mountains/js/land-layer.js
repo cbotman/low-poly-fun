@@ -39,13 +39,13 @@ Botman.LandLayer.prototype.compute_surface_points = function() {
 	];
 	*/
 	
-	var min = 999;
+	var min = -1;
 	for ( var x = 0; x < points.length; x++ ) {
 
 		for ( var y = 0; y < points[x].length; y++ ) {
 
 			points[x][y] = Math.abs( points[x][y] ) * 4; // multiplication here amplifies features
-			if ( points[x][y] < min ) {
+			if ( points[x][y] < min || min == -1 ) {
 		
 				min = points[x][y];
 			}
@@ -72,7 +72,7 @@ Botman.LandLayer.prototype.compute_surface_points = function() {
 
 Botman.LandLayer.prototype.get_width_x = function() {
 
-	// -1 because the there's an extra data point
+	// -1 because there's n + 1 data points for n tiles
 	return ( ( this.surface_points.length - 1 ) * this.options.tile_width_x );
 };
 
@@ -87,7 +87,7 @@ Botman.LandLayer.prototype.get_width_z = function() {
 
 		return 0;
 	}
-	// -1 because the there's an extra data point
+	// -1 because there's n + 1 data points for n tiles
 	return ( ( this.surface_points[0].length - 1 ) * this.options.tile_width_z );
 };
 
@@ -152,7 +152,7 @@ Botman.LandLayer.prototype.draw = function() {
 
 	// X+
 	var points = this.surface_points[this.surface_points.length - 1];
-	points = points.slice().reverse(); // Flip points. Need to slide so original points data isn't altered
+	points = points.slice().reverse(); // Flip points. Need to slice so original points data isn't altered
 	side = this._drawSide( points, this.highest_point, this.options.tile_width_z );
 	side.rotation.y = 90 * Math.PI / 180; // Rotate by X degrees
 	side.position.x += this.get_width_x(); // Move into position
