@@ -21,6 +21,7 @@ Botman.Main = function() {
 	this.surface_points = [];
 	this.land = null;
 	this.land_layer = null;
+	this.tree_layer = null;
 };
 
 Botman.Main.prototype.init = function() {
@@ -160,6 +161,7 @@ Botman.Main.prototype.recreate = function() {
 
 	// Clear existing world, if there is one. Don't want to reset the camera position, etc.
 	this.scene.remove( this.scene.getObjectByName( 'land' ) );
+	this.scene.remove( this.scene.getObjectByName( 'trees' ) );
 
 	// Create new world
 
@@ -174,6 +176,13 @@ Botman.Main.prototype.recreate = function() {
 	land.translateX( this.land_layer.get_center_x() * -1 );
 	land.translateZ( this.land_layer.get_center_z() * -1 );
 	this.scene.add( land );
+	
+	// Tree
+	this.tree_layer = new Botman.TreeLayer( {
+	} );
+	var trees = this.tree_layer.draw();
+	trees.name = 'trees';
+	this.scene.add( trees );
 
 	this.render();
 };

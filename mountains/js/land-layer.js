@@ -102,7 +102,6 @@ Botman.LandLayer.prototype.draw = function() {
 
 	//
 	// Draw surface terrain
-	
 	var material = new THREE.MeshLambertMaterial( { 
 		color: 0xD8D6A3, 
 		shading: THREE.FlatShading 
@@ -185,10 +184,11 @@ Botman.LandLayer.prototype.draw = function() {
 	
 	//
 	// Draw base
-	
+	//var paper_texture = new THREE.ImageUtils.loadTexture( 'images/paper-scan.png' );
 	var darkSideMaterial = new THREE.MeshLambertMaterial( { 
 		color: 0x614126, 
 		shading: THREE.FlatShading
+		//map: paper_texture
 	} );
 	var geometry = new THREE.PlaneGeometry( this.get_width_x(), this.get_width_z(), 1 );
 	var floor = new THREE.Mesh( geometry, darkSideMaterial );
