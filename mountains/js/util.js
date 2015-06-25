@@ -1,6 +1,11 @@
 
 Botman.Util = {}; // Singleton
 
+Botman.Util.random = function( min, max ) {
+
+	return Math.floor( Math.random() * ( max - min + 1 ) + min );
+};
+
 Botman.Util.diamond_square = function( side_length, seed, variation ) {
 
 	//

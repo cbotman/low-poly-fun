@@ -112,7 +112,7 @@ Botman.Main.prototype.init = function() {
 	);
 	
 	var light = new THREE.PointLight( 0xffffff, 0.75, 350 );
-	light.position.set( 20, 80, 40 );
+	light.position.set( -20, 80, -40 );
 	light.add( lightbulb );
 	this.scene.add( light );
 	

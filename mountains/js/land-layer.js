@@ -115,7 +115,8 @@ Botman.LandLayer.prototype.draw = function() {
 	// Draw surface terrain
 	var material = new THREE.MeshLambertMaterial( { 
 		color: 0xD8D6A3, 
-		shading: THREE.FlatShading 
+		shading: THREE.FlatShading,
+		vertexColors: THREE.FaceColors // Handy for debugging
 	} );
 
 	var tile_width_x = this.options.tile_width_x;

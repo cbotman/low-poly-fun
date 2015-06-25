@@ -10,7 +10,7 @@ Botman.TreeLayer = function( options ) {
 
 Botman.TreeLayer.default_options = {
 	land_layer: null, // Need some geography to draw onto :)
-	tree_scale: 2
+	tree_scale: 1
 };
 
 Botman.TreeLayer.prototype.get_trees = function() {
@@ -25,19 +25,42 @@ Botman.TreeLayer.prototype.draw = function() {
 
 		return null;
 	}
+	var land = this.options.land_layer.get_land();
+	if ( land == null ) {
+
+		return null;
+	}
 
 	var trees = new THREE.Object3D();
+	
+	// Match the land layer's position in world space
+	trees.position.setX( land.position.x );
+	trees.position.setZ( land.position.z );
+	
+	// Add trees to layer
+	var material = new THREE.MeshLambertMaterial( { 
+		color: 0x9ACD32, 
+		shading: THREE.FlatShading
+	} );
+	var tree_count = Botman.Util.random( 3, 150 );
+	for ( var i = 0; i < tree_count; i++ ) {
 
+		trees.add( this.add_basic_pinetree( material ) );
+	}
+
+	// Update reference
+	this.trees = trees;
+	
+	return trees;
+};
+
+Botman.TreeLayer.prototype.add_basic_pinetree = function( material ) {
+	
 	//
 	// Add a single tree
 
-	var material = new THREE.MeshLambertMaterial( { 
-		color: 0x9ACD32, 
-		shading: THREE.FlatShading 
-	} );
-
 	//
-	// Draw the tree
+	// Create mesh
 	
 	var tree_height = 5 * this.options.tree_scale;
 	var tree_radius = 1 * this.options.tree_scale;
@@ -54,16 +77,21 @@ Botman.TreeLayer.prototype.draw = function() {
 	geometry.faces.push( new THREE.Face3( 4, 1, 0 ) ); // west
 	geometry.computeFaceNormals();
 
-	// Randomly rotate the tree
-	// TODO...
-
 	var tree = new THREE.Mesh( geometry, material );
+
+	// Randomly rotate the tree
+	tree.rotation.y = Botman.Util.random( 0, 360 ) * Math.PI / 180; // Rotate by X degrees
 
 	//
 	// Position the tree on the land
 
 	// Start by ensuring the tree is higher than the land
-	tree.position.y = this.options.land_layer.get_highest_point() * 2;
+	// TODO: should ensure not too close to other trees
+	tree.position.set(
+		Botman.Util.random( tree_radius, this.options.land_layer.get_width_x() - tree_radius ),
+		this.options.land_layer.get_highest_point() * 2,
+		Botman.Util.random( tree_radius, this.options.land_layer.get_width_z() - tree_radius )
+	);
 
 	// TODO: right idea I think, but not working just yet
 
@@ -75,17 +103,11 @@ Botman.TreeLayer.prototype.draw = function() {
 	// Sit the tree on the surface
 	if ( intersects.length > 0 ) {
 
-		console.log(intersects[0]);
 		tree.position.setY( intersects[0].point.y );
 	}
 
 	// Partially match the normal of the surface?
-
-	// Add tree to layer
-	trees.add( tree );
-
-	// Update reference
-	this.trees = trees;
 	
-	return trees;
+	return tree;
 };
+
