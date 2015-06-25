@@ -7,6 +7,7 @@ Botman.LandLayer = function( options ) {
 	// State
 	this.surface_points = [];
 	this.highest_point = 0;
+	this.land = null;
 };
 
 Botman.LandLayer.default_options = {
@@ -94,6 +95,16 @@ Botman.LandLayer.prototype.get_width_z = function() {
 Botman.LandLayer.prototype.get_center_z = function() {
 
 	return this.get_width_z() / 2;
+};
+
+Botman.LandLayer.prototype.get_land = function() {
+
+	return this.land;
+};
+
+Botman.LandLayer.prototype.get_highest_point = function() {
+
+	return this.highest_point;
 };
 
 Botman.LandLayer.prototype.draw = function() {
@@ -197,6 +208,9 @@ Botman.LandLayer.prototype.draw = function() {
 	floor.position.z = this.get_center_z();
 	floor.position.y = -this.highest_point / 2;
 	land.add( floor );
+
+	// Update reference
+	this.land = land;
 
 	return land;
 };

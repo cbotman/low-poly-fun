@@ -164,6 +164,8 @@ Botman.Main.prototype.recreate = function() {
 	this.scene.remove( this.scene.getObjectByName( 'trees' ) );
 
 	// Create new world
+	// The elements of the scene have been divided into layers, just to help organise code. Inevitably, most layers
+	// will need to know about the land layer as things are mostly relative to that.
 
 	// Land
 	this.land_layer = new Botman.LandLayer( {
@@ -179,6 +181,7 @@ Botman.Main.prototype.recreate = function() {
 	
 	// Tree
 	this.tree_layer = new Botman.TreeLayer( {
+		land_layer: this.land_layer
 	} );
 	var trees = this.tree_layer.draw();
 	trees.name = 'trees';

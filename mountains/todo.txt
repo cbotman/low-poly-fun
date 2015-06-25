@@ -1,15 +1,23 @@
 
-- land-layer: remove magic numbers, turn them into options, such as colours and size
+- trees
 
-- paper texture using perlin noise. apply to all of the things.
-
-- color variations at a given height, e.g. Litlle bit of brown getting into the greens. i think this should be a lookup with random variance
-
-- merging height maps where each is configured for particular features. E.g. Grass/hills vs mountains?
+- before going much further, add 'use strict' to everything
 
 - use spotlight rather than 360 point light as camera
 
-- trees and rocks
+
+
+- need to understand how the ambient light works i.e. what it's effect is, and configure correctly
+
+- paper texture using perlin noise. apply to all of the things.
+
+- land-layer: remove magic numbers, turn them into options, such as colours and size
+
+- color variations at a given height, e.g. little bit of brown getting into the greens. i think this should be a lookup with random variance
+
+- merging height maps where each is configured for particular features. E.g. Grass/hills vs mountains?
+
+- rocks and tufts of grass
 
 - dof and tiltshift
 
