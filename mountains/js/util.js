@@ -3,7 +3,23 @@ Botman.Util = {}; // Singleton
 
 Botman.Util.random = function( min, max ) {
 
-	return Math.floor( Math.random() * ( max - min + 1 ) + min );
+	return Math.random() * ( max - min + 1 ) + min;
+};
+
+Botman.Util.random_int = function( min, max ) {
+
+	return Math.floor( this.random( min, max ) );
+};
+
+/**
+ * A little experiment. Returns a random number between min and max, but there's a bias toward
+ * the middle value. Seems like a nice way to create exceptions.
+ * @param min
+ * @param max
+ */
+Botman.Util.biased_random = function( min, max ) {
+
+	// value = random min, x_max
 };
 
 Botman.Util.diamond_square = function( side_length, seed, variation ) {

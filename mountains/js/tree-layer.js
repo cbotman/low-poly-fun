@@ -93,8 +93,6 @@ Botman.TreeLayer.prototype.add_basic_pinetree = function( material ) {
 		Botman.Util.random( tree_radius, this.options.land_layer.get_width_z() - tree_radius )
 	);
 
-	// TODO: right idea I think, but not working just yet
-
 	// Cast a ray downwards from the tree to find what it's over
 	var raycaster = new THREE.Raycaster();
 	raycaster.set( tree.position, new THREE.Vector3( 0, -1, 0 ) );
