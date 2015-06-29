@@ -26,6 +26,13 @@ Botman.Main = function() {
 
 Botman.Main.prototype.init = function() {
 
+	/*
+	for ( var i = 0; i < 100; i++ ) {
+	
+		console.log( Botman.Util.normally_distributed_random() );
+	}
+	*/
+
 	//
 	// Only need to init once
 	if ( this.is_initiated ) {

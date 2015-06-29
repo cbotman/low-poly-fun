@@ -42,7 +42,7 @@ Botman.TreeLayer.prototype.draw = function() {
 		color: 0x9ACD32, 
 		shading: THREE.FlatShading
 	} );
-	var tree_count = Botman.Util.random( 3, 150 );
+	var tree_count = Botman.Util.random_int( 3, 150 );
 	for ( var i = 0; i < tree_count; i++ ) {
 
 		trees.add( this.add_basic_pinetree( material ) );
@@ -62,8 +62,14 @@ Botman.TreeLayer.prototype.add_basic_pinetree = function( material ) {
 	//
 	// Create mesh
 	
-	var tree_height = 5 * this.options.tree_scale;
-	var tree_radius = 1 * this.options.tree_scale;
+	// Many trees will be the same max size, but have some variation in smaller ones.
+	var tree_variation = Botman.Util.normally_distributed_random() * 2;
+	if ( tree_variation > 1.1 || tree_variation < 0.25 ) {
+	
+		tree_variation = 1;
+	}
+	var tree_height = tree_variation * 5 * this.options.tree_scale;
+	var tree_radius = tree_variation * 1 * this.options.tree_scale;
 	
 	var geometry = new THREE.Geometry();
 	geometry.vertices.push( new THREE.Vector3( 0, tree_height, 0 ) ); // top
@@ -80,7 +86,7 @@ Botman.TreeLayer.prototype.add_basic_pinetree = function( material ) {
 	var tree = new THREE.Mesh( geometry, material );
 
 	// Randomly rotate the tree
-	tree.rotation.y = Botman.Util.random( 0, 360 ) * Math.PI / 180; // Rotate by X degrees
+	tree.rotation.y = Botman.Util.random_int( 0, 360 ) * Math.PI / 180; // Rotate by X degrees
 
 	//
 	// Position the tree on the land
@@ -88,9 +94,9 @@ Botman.TreeLayer.prototype.add_basic_pinetree = function( material ) {
 	// Start by ensuring the tree is higher than the land
 	// TODO: should ensure not too close to other trees
 	tree.position.set(
-		Botman.Util.random( tree_radius, this.options.land_layer.get_width_x() - tree_radius ),
+		Botman.Util.random_int( tree_radius, this.options.land_layer.get_width_x() - tree_radius ),
 		this.options.land_layer.get_highest_point() * 2,
-		Botman.Util.random( tree_radius, this.options.land_layer.get_width_z() - tree_radius )
+		Botman.Util.random_int( tree_radius, this.options.land_layer.get_width_z() - tree_radius )
 	);
 
 	// Cast a ray downwards from the tree to find what it's over

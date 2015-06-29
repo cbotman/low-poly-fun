@@ -3,26 +3,26 @@
 
 - use spotlight rather than 360 point light as camera
 
-
-
 - need to understand how the ambient light works i.e. what it's effect is, and configure correctly
-
-- add skydome and create gradient background
-
-- look into having scene cast a floor shadow 
-
-- paper texture using perlin noise. apply to all of the things.
-
-- dof and tiltshift
-
-- more varied trees (shapes and sizes) and low poly shapes
-
-- land-layer: remove magic numbers, turn them into options, such as colours and size
 
 - color variations at a given height, e.g. little bit of brown getting into the greens. i think this should be a lookup with random variance
 
 - merging height maps where each is configured for particular features. E.g. Grass/hills vs mountains?
 
+- paper texture using perlin noise. apply to all of the things.
+
+- shadows?
+
+- dof and tiltshift
+
+- look into having scene cast a floor shadow 
+
+- land-layer: remove magic numbers, turn them into options, such as colours and size
+
+- more varied trees (shapes and sizes) and low poly shapes
+
 - rocks and tufts of grass
 
 - keyboard steering/navigation
+
+- add skydome and create gradient background

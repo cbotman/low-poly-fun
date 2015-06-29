@@ -1,25 +1,21 @@
 
 Botman.Util = {}; // Singleton
 
-Botman.Util.random = function( min, max ) {
-
-	return Math.random() * ( max - min + 1 ) + min;
-};
-
+/**
+*	Returns a random integer number between min and max, inclusive.
+*/
 Botman.Util.random_int = function( min, max ) {
 
-	return Math.floor( this.random( min, max ) );
+	return Math.floor( Math.random() * ( max - min + 1 ) + min );
 };
 
 /**
- * A little experiment. Returns a random number between min and max, but there's a bias toward
- * the middle value. Seems like a nice way to create exceptions.
- * @param min
- * @param max
- */
-Botman.Util.biased_random = function( min, max ) {
+*	Returns a random value between 0 and 1 with an approximate normal distribution.
+*	http://stackoverflow.com/a/20161247/127352
+*/
+Botman.Util.normally_distributed_random = function() {
 
-	// value = random min, x_max
+	return ( ( Math.random() + Math.random() + Math.random() + Math.random() + Math.random() + Math.random() ) ) / 6;
 };
 
 Botman.Util.diamond_square = function( side_length, seed, variation ) {
