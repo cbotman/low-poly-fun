@@ -1,3 +1,4 @@
+'use strict';
 
 Botman.Main = function() {
 

@@ -1,11 +1,14 @@
 
-- before going much further, add 'use strict' to everything
-
-- use spotlight rather than 360 point light as camera
+- use spotlight rather than 360 point light as camera. need to check if it's more efficient
 
 - need to understand how the ambient light works i.e. what it's effect is, and configure correctly
 
+- play with directional light
+
+
+
 - color variations at a given height, e.g. little bit of brown getting into the greens. i think this should be a lookup with random variance
+
 
 - merging height maps where each is configured for particular features. E.g. Grass/hills vs mountains?
 

@@ -1,3 +1,4 @@
+'use strict';
 
 Botman.TreeLayer = function( options ) {
 
@@ -10,7 +11,7 @@ Botman.TreeLayer = function( options ) {
 
 Botman.TreeLayer.default_options = {
 	land_layer: null, // Need some geography to draw onto :)
-	tree_scale: 1
+	mean_tree_height: 4.5
 };
 
 Botman.TreeLayer.prototype.get_trees = function() {
@@ -63,14 +64,10 @@ Botman.TreeLayer.prototype.add_basic_pinetree = function( material ) {
 	// Create mesh
 	
 	// Many trees will be the same max size, but have some variation in smaller ones.
-	var tree_variation = Botman.Util.normally_distributed_random() * 2;
-	if ( tree_variation > 1.1 || tree_variation < 0.25 ) {
-	
-		tree_variation = 1;
-	}
-	var tree_height = tree_variation * 5 * this.options.tree_scale;
-	var tree_radius = tree_variation * 1 * this.options.tree_scale;
-	
+	var tree_variation = Botman.Util.normally_distributed_random();
+	var tree_height = tree_variation * this.options.mean_tree_height;
+	var tree_radius = tree_height / 5;
+
 	var geometry = new THREE.Geometry();
 	geometry.vertices.push( new THREE.Vector3( 0, tree_height, 0 ) ); // top
 	geometry.vertices.push( new THREE.Vector3( -tree_radius, 0, tree_radius ) ); // sw

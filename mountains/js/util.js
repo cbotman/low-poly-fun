@@ -1,3 +1,4 @@
+'use strict';
 
 Botman.Util = {}; // Singleton
 
@@ -10,12 +11,13 @@ Botman.Util.random_int = function( min, max ) {
 };
 
 /**
-*	Returns a random value between 0 and 1 with an approximate normal distribution.
-*	http://stackoverflow.com/a/20161247/127352
+*	Returns a random value (float) around 1 with an approximate normal distribution.
+*	See: http://stackoverflow.com/a/20161247/127352 and http://jsfiddle.net/tvt5K/102/
 */
 Botman.Util.normally_distributed_random = function() {
 
-	return ( ( Math.random() + Math.random() + Math.random() + Math.random() + Math.random() + Math.random() ) ) / 6;
+	// A higher divisor creates more of a central peak. Dividing by 3 seems to make a nice looking bell curve.
+	return ( ( Math.random() + Math.random() + Math.random() + Math.random() + Math.random() + Math.random() ) ) / 3;
 };
 
 Botman.Util.diamond_square = function( side_length, seed, variation ) {
