@@ -111,7 +111,7 @@ Botman.Main.prototype.init = function() {
 	
 	//
 	// Lighting
-	// TODO: lighting feels like it's more of the scene/world that init stuff
+	// TODO: lighting feels like it's more of the scene/world than init stuff
 	
 	// create a small sphere to show position of light
 	var lightbulb = new THREE.Mesh(
@@ -125,6 +125,11 @@ Botman.Main.prototype.init = function() {
 	this.scene.add( light );
 	
 	var ambientLight = new THREE.AmbientLight( 0x666666 );
+	var intensity = 1.0;
+	ambientLight.color.setRGB(
+		ambientLight.color.r * intensity,
+		ambientLight.color.g * intensity,
+		ambientLight.color.b * intensity );
 	this.scene.add( ambientLight );
 	
 	// Attach a soft light to the camera

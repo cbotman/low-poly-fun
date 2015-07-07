@@ -65,6 +65,11 @@ Botman.TreeLayer.prototype.add_basic_pinetree = function( material ) {
 	
 	// Many trees will be the same max size, but have some variation in smaller ones.
 	var tree_variation = Botman.Util.normally_distributed_random();
+	// Cap the tree height as a bit of consistency looks good
+	if ( tree_variation > 1.1 ) {
+
+		tree_variation = 1.1;
+	}
 	var tree_height = tree_variation * this.options.mean_tree_height;
 	var tree_radius = tree_height / 5;
 

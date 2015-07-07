@@ -1,9 +1,10 @@
 
 - use spotlight rather than 360 point light as camera. need to check if it's more efficient
-
-- need to understand how the ambient light works i.e. what it's effect is, and configure correctly
+	actually probably want directional or shadow
 
 - play with directional light
+
+- shadows
 
 
 
@@ -13,8 +14,6 @@
 - merging height maps where each is configured for particular features. E.g. Grass/hills vs mountains?
 
 - paper texture using perlin noise. apply to all of the things.
-
-- shadows?
 
 - dof and tiltshift
 
