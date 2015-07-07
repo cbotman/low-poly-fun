@@ -183,7 +183,15 @@ Botman.Main.prototype.recreate = function() {
 	// Land
 	this.land_layer = new Botman.LandLayer( {
 		tile_width_x: 10,
-		tile_width_z: 10
+		tile_width_z: 10,
+		color_map: [
+			[0xFFFFFF],
+			[0x705A3D],
+			[0x705A3D],
+			[0xD6D177],
+			[0xD6D177],
+			[0xD6D177]
+		]
 	} );
 	this.land_layer.compute_surface_points();
 	var land = this.land_layer.draw();
