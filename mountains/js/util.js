@@ -3,6 +3,14 @@
 Botman.Util = {}; // Singleton
 
 /**
+*	Returns a random item from the given array.
+*/
+Botman.Util.random_element = function( array ) {
+
+	return array[Math.floor( Math.random() * array.length )];
+}
+
+/**
 *	Returns a random integer number between min and max, inclusive.
 */
 Botman.Util.random_int = function( min, max ) {

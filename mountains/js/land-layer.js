@@ -2,17 +2,23 @@
 Botman.LandLayer = function( options ) {
 
 	// Options
-	this.options = $.extend( true, {}, Botman.LandLayer.default_options, options );
+	options = $.extend( true, {}, Botman.LandLayer.default_options, options );
 
 	// State
-	this.surface_points = [];
-	this.highest_point = 0;
-	this.land = null;
+	this._color_map = options.color_map;
+	this._tile_width_x = options.tile_width_x;
+	this._tile_width_z = options.tile_width_z;
+	this._surface_points = [];
+	this._highest_point = 0;
+	this._land = null;
 };
 
 Botman.LandLayer.default_options = {
 	tile_width_x: 10,
-	tile_width_z: 10
+	tile_width_z: 10,
+	// Colours for surface. The row is deterimed by each face's average height, then a 
+	// column is selected randomly to create variation. (Not really using, as doesn't look great)
+	color_map: [[0xD8D6A3]]
 };
 
 Botman.LandLayer.prototype.compute_surface_points = function() {
@@ -50,9 +56,9 @@ Botman.LandLayer.prototype.compute_surface_points = function() {
 		
 				min = points[x][y];
 			}
-			if ( points[x][y] > this.highest_point ) {
+			if ( points[x][y] > this._highest_point ) {
 			
-				this.highest_point = points[x][y];
+				this._highest_point = points[x][y];
 			}
 		}
 	}
@@ -66,15 +72,15 @@ Botman.LandLayer.prototype.compute_surface_points = function() {
 			points[x][y] -= min;
 		}
 	}
-	this.highest_point -= min;
+	this._highest_point -= min;
 
-	this.surface_points = points;
+	this._surface_points = points;
 };
 
 Botman.LandLayer.prototype.get_width_x = function() {
 
 	// -1 because there's n + 1 data points for n tiles
-	return ( ( this.surface_points.length - 1 ) * this.options.tile_width_x );
+	return ( ( this._surface_points.length - 1 ) * this._tile_width_x );
 };
 
 Botman.LandLayer.prototype.get_center_x = function() {
@@ -84,12 +90,12 @@ Botman.LandLayer.prototype.get_center_x = function() {
 
 Botman.LandLayer.prototype.get_width_z = function() {
 
-	if ( this.surface_points.length == 0 ) {
+	if ( this._surface_points.length == 0 ) {
 
 		return 0;
 	}
 	// -1 because there's n + 1 data points for n tiles
-	return ( ( this.surface_points[0].length - 1 ) * this.options.tile_width_z );
+	return ( ( this._surface_points[0].length - 1 ) * this._tile_width_z );
 };
 
 Botman.LandLayer.prototype.get_center_z = function() {
@@ -99,12 +105,12 @@ Botman.LandLayer.prototype.get_center_z = function() {
 
 Botman.LandLayer.prototype.get_land = function() {
 
-	return this.land;
+	return this._land;
 };
 
 Botman.LandLayer.prototype.get_highest_point = function() {
 
-	return this.highest_point;
+	return this._highest_point;
 };
 
 Botman.LandLayer.prototype.draw = function() {
@@ -116,15 +122,15 @@ Botman.LandLayer.prototype.draw = function() {
 	var material = new THREE.MeshLambertMaterial( { 
 		color: 0xD8D6A3, 
 		shading: THREE.FlatShading,
-		vertexColors: THREE.FaceColors // Handy for debugging
+		vertexColors: THREE.FaceColors
 	} );
 
-	var tile_width_x = this.options.tile_width_x;
-	var tile_width_z = this.options.tile_width_z;
+	var tile_width_x = this._tile_width_x;
+	var tile_width_z = this._tile_width_z;
 
-	for ( var x = 0; x < this.surface_points.length - 1; x++ ) {
+	for ( var x = 0; x < this._surface_points.length - 1; x++ ) {
 
-		for ( var y = 0; y < this.surface_points[x].length - 1; y++ ) {
+		for ( var y = 0; y < this._surface_points[x].length - 1; y++ ) {
 
 			var geometry = new THREE.Geometry();
 
@@ -133,10 +139,10 @@ Botman.LandLayer.prototype.draw = function() {
 			var north_z = y * tile_width_z;
 			var south_z = north_z + tile_width_z;
 
-			var north_west_y = this.surface_points[x][y];
-			var south_west_y = this.surface_points[x][y + 1];
-			var north_east_y = this.surface_points[x + 1][y];
-			var south_east_y = this.surface_points[x + 1][y + 1];
+			var north_west_y = this._surface_points[x][y];
+			var south_west_y = this._surface_points[x][y + 1];
+			var north_east_y = this._surface_points[x + 1][y];
+			var south_east_y = this._surface_points[x + 1][y + 1];
 
 			geometry.vertices.push( new THREE.Vector3( west_x, north_west_y, north_z ) ); // north-west
 			geometry.vertices.push( new THREE.Vector3( west_x, south_west_y, south_z ) ); // south-west
@@ -145,6 +151,12 @@ Botman.LandLayer.prototype.draw = function() {
 			geometry.faces.push( new THREE.Face3( 1, 2, 0 ) ); // sw, ne, nw
 			geometry.faces.push( new THREE.Face3( 1, 3, 2 ) ); // sw, se, ne
 			geometry.computeFaceNormals();
+			
+			//this._map_surface_color( geometry.faces[0], ( south_west_y + north_east_y + north_west_y ) / 3 );
+			//this._map_surface_color( geometry.faces[1], ( south_west_y + south_east_y + north_east_y ) / 3 );
+			
+			this._map_surface_color( geometry.faces[0], Math.max( south_west_y, north_east_y, north_west_y ) );
+			this._map_surface_color( geometry.faces[1], Math.max( south_west_y, south_east_y, north_east_y ) );
 
 			var square_mesh = new THREE.Mesh( geometry, material );
 			land.add( square_mesh );
@@ -155,16 +167,16 @@ Botman.LandLayer.prototype.draw = function() {
 	// Draw sides
 
 	// X-
-	var points = this.surface_points[0];
-	var side = this._drawSide( points, this.highest_point, this.options.tile_width_z );
+	var points = this._surface_points[0];
+	var side = this._drawSide( points, this._highest_point, this._tile_width_z );
 	side.rotation.y = 270 * Math.PI / 180; // Rotate by X degrees
 	side.position.z += this.get_center_z(); // Move into position
 	land.add( side );
 
 	// X+
-	var points = this.surface_points[this.surface_points.length - 1];
+	var points = this._surface_points[this._surface_points.length - 1];
 	points = points.slice().reverse(); // Flip points. Need to slice so original points data isn't altered
-	side = this._drawSide( points, this.highest_point, this.options.tile_width_z );
+	side = this._drawSide( points, this._highest_point, this._tile_width_z );
 	side.rotation.y = 90 * Math.PI / 180; // Rotate by X degrees
 	side.position.x += this.get_width_x(); // Move into position
 	side.position.z += this.get_center_z(); 
@@ -173,22 +185,22 @@ Botman.LandLayer.prototype.draw = function() {
 	// Z-
 	points = [];
 	// Iterate array backwards so points are in required order
-	for ( var i = this.surface_points.length - 1; i >= 0; i-- ) {
+	for ( var i = this._surface_points.length - 1; i >= 0; i-- ) {
 
-		points.push( this.surface_points[i][0] );
+		points.push( this._surface_points[i][0] );
 	}
-	side = this._drawSide( points, this.highest_point, this.options.tile_width_x );
+	side = this._drawSide( points, this._highest_point, this._tile_width_x );
 	side.rotation.y = 180 * Math.PI / 180; // Rotate by X degrees
 	side.position.x += this.get_center_x(); // Move into position
 	land.add( side );
 	
 	// Z+
 	points = [];
-	for ( var i = 0; i < this.surface_points.length; i++ ) {
+	for ( var i = 0; i < this._surface_points.length; i++ ) {
 	
-		points.push( this.surface_points[i][this.surface_points[i].length - 1] );
+		points.push( this._surface_points[i][this._surface_points[i].length - 1] );
 	}
-	side = this._drawSide( points, this.highest_point, this.options.tile_width_x );
+	side = this._drawSide( points, this._highest_point, this._tile_width_x );
 	side.rotation.y = 0 * Math.PI / 180; // Rotate by X degrees. In this case, none needed.
 	side.position.x += this.get_center_x(); // Move into position
 	side.position.z += this.get_width_z();
@@ -202,18 +214,36 @@ Botman.LandLayer.prototype.draw = function() {
 		shading: THREE.FlatShading
 		//map: paper_texture
 	} );
-	var geometry = new THREE.PlaneGeometry( this.get_width_x(), this.get_width_z(), 1 );
+	var geometry = new THREE.PlaneBufferGeometry( this.get_width_x(), this.get_width_z(), 1 );
 	var floor = new THREE.Mesh( geometry, darkSideMaterial );
 	floor.rotation.x = Math.PI / 2;
 	floor.position.x = this.get_center_x();
 	floor.position.z = this.get_center_z();
-	floor.position.y = -this.highest_point / 2;
+	floor.position.y = -this._highest_point / 2;
 	land.add( floor );
 
 	// Update reference
-	this.land = land;
+	this._land = land;
 
 	return land;
+};
+
+Botman.LandLayer.prototype.get_color_map = function() {
+
+	return this._color_map;
+};
+
+Botman.LandLayer.prototype.get_color_map_index = function( height ) {
+
+	var index = this._color_map.length - 1;
+	index -= Math.floor( height / ( ( this._highest_point + 1 ) / this._color_map.length ) );
+	return index;
+};
+
+Botman.LandLayer.prototype._map_surface_color = function( face, height ) {
+
+	var colors = this._color_map[this.get_color_map_index( height )];
+	face.color.setHex( Botman.Util.random_element( colors ) );
 };
 
 Botman.LandLayer.prototype._drawSide = function( points, global_max_point, tile_width ) {
