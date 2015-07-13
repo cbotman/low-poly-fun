@@ -21,9 +21,17 @@ Botman.LandLayer.default_options = {
 	color_map: [[0xD8D6A3]]
 };
 
-Botman.LandLayer.prototype.compute_surface_points = function() {
+Botman.LandLayer.prototype.compute_surface_points = function( highest_point ) {
 
-	var points = Botman.Util.diamond_square( 17, 0, 7 );
+	/**
+	 * Settled on a 4 step process.
+	 * - generate a set of point susing diamond square, as I like the shapes this gives more than perlin, so far
+	 * - multiply all the points exponentially, to effectively stretch them out and make the higher points higher, relatively speaking
+	 * - reduce all the points by the minimum, so the lowest point is 0
+	 * - scale all the points so they are within a desired range of 0 to X.
+	 */
+
+	var points = Botman.Util.diamond_square( 17, 0, 6 );
 
 	// Trim off the edge points as they tend to be spikes with diamond square
 	var trimmed_points = [];
@@ -45,13 +53,15 @@ Botman.LandLayer.prototype.compute_surface_points = function() {
 		[2, 6, 11]
 	];
 	*/
-	
+
+	// Multiply each point to stretch it out
 	var min = -1;
 	for ( var x = 0; x < points.length; x++ ) {
 
 		for ( var y = 0; y < points[x].length; y++ ) {
 
-			points[x][y] = Math.abs( points[x][y] ) * 4; // multiplication here amplifies features
+			points[x][y] = Math.abs( points[x][y] ); // Otherwise next step can run into trouble: http://stackoverflow.com/q/14575697/127352
+			points[x][y] = Math.pow( points[x][y], 1.8 ); // Higher exponent stretches things out further
 			if ( points[x][y] < min || min == -1 ) {
 		
 				min = points[x][y];
@@ -64,15 +74,18 @@ Botman.LandLayer.prototype.compute_surface_points = function() {
 	}
 	//console.log(points);
 
-	// Lower all points by their minimum
+	// Lower all points by their minimum and scale to be between 0 and X
+	this._highest_point -= min;
+	var scale = ( highest_point / this._highest_point );
+	this._highest_point *= scale;
 	for ( var x = 0; x < points.length; x++ ) {
 
 		for ( var y = 0; y < points[x].length; y++ ) {
 
 			points[x][y] -= min;
+			points[x][y] *= scale;
 		}
 	}
-	this._highest_point -= min;
 
 	this._surface_points = points;
 };

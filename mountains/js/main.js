@@ -193,7 +193,7 @@ Botman.Main.prototype.recreate = function() {
 			[0xD6D177]
 		]
 	} );
-	this.land_layer.compute_surface_points();
+	this.land_layer.compute_surface_points( 50 );
 	var land = this.land_layer.draw();
 	land.name = 'land';
 	land.translateX( this.land_layer.get_center_x() * -1 );
