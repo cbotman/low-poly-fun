@@ -1,23 +1,14 @@
 
-- use spotlight rather than 360 point light as camera. need to check if it's more efficient
-	actually probably want directional or shadow
-
-- play with directional light
-
 - shadows
 
 
 
-- color variations at a given height, e.g. little bit of brown getting into the greens. i think this should be a lookup with random variance
-
-
-- merging height maps where each is configured for particular features. E.g. Grass/hills vs mountains?
 
 - paper texture using perlin noise. apply to all of the things.
 
 - dof and tiltshift
 
-- look into having scene cast a floor shadow 
+- look into having scene cast a floor shadow. horizon light?
 
 - land-layer: remove magic numbers, turn them into options, such as colours and size
 

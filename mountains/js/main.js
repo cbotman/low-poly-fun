@@ -113,6 +113,7 @@ Botman.Main.prototype.init = function() {
 	// Lighting
 	// TODO: lighting feels like it's more of the scene/world than init stuff
 	
+	/*
 	// create a small sphere to show position of light
 	var lightbulb = new THREE.Mesh(
 		new THREE.SphereGeometry( 5, 16, 8 ),
@@ -123,7 +124,11 @@ Botman.Main.prototype.init = function() {
 	light.position.set( -20, 80, -40 );
 	light.add( lightbulb );
 	this.scene.add( light );
-	
+	*/
+	var directional_light = new THREE.DirectionalLight( 0xff9900, 0.55 );
+	directional_light.position.set( 1, 1, 1 );
+	this.scene.add( directional_light );
+
 	var ambientLight = new THREE.AmbientLight( 0x666666 );
 	var intensity = 1.0;
 	ambientLight.color.setRGB(

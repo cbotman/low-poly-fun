@@ -1,3 +1,4 @@
+'use strict';
 
 Botman.LandLayer = function( options ) {
 
@@ -24,11 +25,12 @@ Botman.LandLayer.default_options = {
 Botman.LandLayer.prototype.compute_surface_points = function( highest_point ) {
 
 	/**
-	 * Settled on a 4 step process.
+	 * Settled on a 5 step process.
 	 * - generate a set of point susing diamond square, as I like the shapes this gives more than perlin, so far
 	 * - multiply all the points exponentially, to effectively stretch them out and make the higher points higher, relatively speaking
 	 * - reduce all the points by the minimum, so the lowest point is 0
 	 * - scale all the points so they are within a desired range of 0 to X.
+	 * - finally, smooth out any spikes
 	 */
 
 	var points = Botman.Util.diamond_square( 17, 0, 6 );
@@ -61,7 +63,7 @@ Botman.LandLayer.prototype.compute_surface_points = function( highest_point ) {
 		for ( var y = 0; y < points[x].length; y++ ) {
 
 			points[x][y] = Math.abs( points[x][y] ); // Otherwise next step can run into trouble: http://stackoverflow.com/q/14575697/127352
-			points[x][y] = Math.pow( points[x][y], 1.8 ); // Higher exponent stretches things out further
+			points[x][y] = Math.pow( points[x][y], 2.4 ); // Higher exponent stretches things out further
 			if ( points[x][y] < min || min == -1 ) {
 		
 				min = points[x][y];
@@ -77,7 +79,6 @@ Botman.LandLayer.prototype.compute_surface_points = function( highest_point ) {
 	// Lower all points by their minimum and scale to be between 0 and X
 	this._highest_point -= min;
 	var scale = ( highest_point / this._highest_point );
-	this._highest_point *= scale;
 	for ( var x = 0; x < points.length; x++ ) {
 
 		for ( var y = 0; y < points[x].length; y++ ) {
@@ -86,6 +87,51 @@ Botman.LandLayer.prototype.compute_surface_points = function( highest_point ) {
 			points[x][y] *= scale;
 		}
 	}
+	
+	// Finally, smooth out any crazy spikes. Don't worry about altering highest point.
+	var smoothed_points = [];
+	this._highest_point = 0;
+	for ( var x = 0; x < points.length; x++ ) {
+
+		smoothed_points.push( [] );
+		for ( var y = 0; y < points[x].length; y++ ) {
+
+			var max_difference = 0;
+			for ( var deltaX = x - 1; deltaX <= x + 1; deltaX++ ) {
+
+				for ( var deltaY = y - 1; deltaY <= y + 1; deltaY++ ) {
+
+					var out_of_bounds = (
+						deltaX < 0 || 
+						deltaY < 0 ||
+						deltaX >= points.length || 
+						deltaY >= points[deltaX].length ||
+						( deltaX == x && deltaY == y )
+					);
+					if ( out_of_bounds ) {
+						
+						continue;
+					}
+					var difference = points[x][y] - points[deltaX][deltaY];
+					if ( difference > max_difference ) {
+					
+						max_difference = difference;
+					}
+				}
+			}
+			var revised_point = points[x][y];
+			if ( max_difference > revised_point / 2  ) {
+			
+				revised_point *= 0.5;
+			}
+			if ( revised_point > this._highest_point ) {
+			
+				this._highest_point = revised_point;
+			}
+			smoothed_points[x].push( revised_point );
+		}
+	}
+	points = smoothed_points;
 
 	this._surface_points = points;
 };
