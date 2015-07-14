@@ -88,7 +88,7 @@ Botman.LandLayer.prototype.compute_surface_points = function( highest_point ) {
 		}
 	}
 	
-	// Finally, smooth out any crazy spikes. Don't worry about altering highest point.
+	// Finally, smooth out any crazy spikes.
 	var smoothed_points = [];
 	this._highest_point = 0;
 	for ( var x = 0; x < points.length; x++ ) {
@@ -120,8 +120,8 @@ Botman.LandLayer.prototype.compute_surface_points = function( highest_point ) {
 				}
 			}
 			var revised_point = points[x][y];
-			if ( max_difference > revised_point / 2  ) {
-			
+			if ( max_difference > ( revised_point / 2 ) ) {
+
 				revised_point *= 0.5;
 			}
 			if ( revised_point > this._highest_point ) {
@@ -218,6 +218,7 @@ Botman.LandLayer.prototype.draw = function() {
 			this._map_surface_color( geometry.faces[1], Math.max( south_west_y, south_east_y, north_east_y ) );
 
 			var square_mesh = new THREE.Mesh( geometry, material );
+			square_mesh.receiveShadow = true;
 			land.add( square_mesh );
 		}
 	}
@@ -280,6 +281,9 @@ Botman.LandLayer.prototype.draw = function() {
 	floor.position.z = this.get_center_z();
 	floor.position.y = -this._highest_point / 2;
 	land.add( floor );
+
+	// Shadows
+	//land.receiveShadow = true;
 
 	// Update reference
 	this._land = land;

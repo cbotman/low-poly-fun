@@ -51,28 +51,35 @@ Botman.Main.prototype.init = function() {
 	var screen_height = window.innerHeight;
 	var view_angle = 45;
 	var aspect = screen_width / screen_height;
-	var near = 0.1;
-	var far = 20000;
-	this.camera = new THREE.PerspectiveCamera( view_angle, aspect, near, far );
-	this.scene.add( this.camera );
-	this.camera.position.set( 200, 110, 100 );
-	this.camera.lookAt( this.scene.position );
+	var near = 1;
+	var far = 10000;
+	var camera = new THREE.PerspectiveCamera( view_angle, aspect, near, far );
+	this.scene.add( camera );
+	camera.position.set( 200, 110, 100 );
+	camera.lookAt( this.scene.position );
+	this.camera = camera;
 
 	//
 	// Renderer
+	var renderer = null;
 	if ( Detector.webgl ) {
 
-		this.renderer = new THREE.WebGLRenderer( {
+		renderer = new THREE.WebGLRenderer( {
 			antialias: true,
 			alpha: true
 		} );
 	}
 	else {
 
-		this.renderer = new THREE.CanvasRenderer();
+		renderer = new THREE.CanvasRenderer();
 	}
-	this.renderer.setSize( screen_width, screen_height );
-	this.renderer.setClearColor( 0xffffff, 0 );
+	this.renderer = renderer;
+	renderer.setSize( screen_width, screen_height );
+	renderer.setClearColor( 0x555555, 1 );
+
+	// Shadows
+	renderer.shadowMapEnabled = true;
+	renderer.shadowMapType = THREE.PCFSoftShadowMap;
 
 	//
 	// Container
@@ -126,7 +133,16 @@ Botman.Main.prototype.init = function() {
 	this.scene.add( light );
 	*/
 	var directional_light = new THREE.DirectionalLight( 0xff9900, 0.55 );
-	directional_light.position.set( 1, 1, 1 );
+	directional_light.position.set( 50, 60, 1 );
+	directional_light.castShadow = true;
+	directional_light.shadowDarkness = 0.5;
+	directional_light.shadowCameraVisible = true;
+	directional_light.shadowCameraNear = 10;
+	directional_light.shadowCameraFar = 250;
+	directional_light.shadowCameraRight = 50;
+	directional_light.shadowCameraLeft = -50;
+	directional_light.shadowCameraTop = 50;
+	directional_light.shadowCameraBottom = -50;
 	this.scene.add( directional_light );
 
 	var ambientLight = new THREE.AmbientLight( 0x666666 );

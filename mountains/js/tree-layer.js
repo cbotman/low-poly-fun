@@ -134,6 +134,10 @@ Botman.TreeLayer.prototype.add_basic_pinetree = function() {
 	}
 
 	// Partially match the normal of the surface?
+
+	// Shadow
+	tree.castShadow = true;
+	//tree.receiveShadow = true;
 	
 	return tree;
 };
