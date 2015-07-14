@@ -19,7 +19,6 @@ Botman.Main = function() {
 	this.clock = new THREE.Clock();
 
 	// World properties (i.e. the world/scene we're drawing)
-	this.surface_points = [];
 	this.land = null;
 	this.land_layer = null;
 	this.tree_layer = null;
@@ -133,16 +132,18 @@ Botman.Main.prototype.init = function() {
 	this.scene.add( light );
 	*/
 	var directional_light = new THREE.DirectionalLight( 0xff9900, 0.55 );
-	directional_light.position.set( 50, 60, 1 );
+	directional_light.position.set( 50, 60, -25 );
 	directional_light.castShadow = true;
-	directional_light.shadowDarkness = 0.5;
-	directional_light.shadowCameraVisible = true;
+	directional_light.shadowDarkness = 0.2;
+	directional_light.shadowCameraVisible = false;
 	directional_light.shadowCameraNear = 10;
 	directional_light.shadowCameraFar = 250;
-	directional_light.shadowCameraRight = 50;
-	directional_light.shadowCameraLeft = -50;
-	directional_light.shadowCameraTop = 50;
-	directional_light.shadowCameraBottom = -50;
+	directional_light.shadowCameraRight = 100;
+	directional_light.shadowCameraLeft = -100;
+	directional_light.shadowCameraTop = 100;
+	directional_light.shadowCameraBottom = -100;
+	directional_light.shadowMapWidth = 5000;
+	directional_light.shadowMapHeight = 5000;
 	this.scene.add( directional_light );
 
 	var ambientLight = new THREE.AmbientLight( 0x666666 );
@@ -154,9 +155,8 @@ Botman.Main.prototype.init = function() {
 	this.scene.add( ambientLight );
 	
 	// Attach a soft light to the camera
-	// TODO: wastful having pointlight here? make it a spotlight
-	var light2 = new THREE.PointLight( 0xffffff, 0.5, 250 );
-	this.camera.add( light2 );
+	var camera_light = new THREE.PointLight( 0xffffff, 0.25, 250 );
+	this.camera.add( camera_light );
 
 	//
 	// Start animation loop

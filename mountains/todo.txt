@@ -1,8 +1,4 @@
 
-- shadows
-
-
-
 
 - paper texture using perlin noise. apply to all of the things.
 

@@ -219,6 +219,7 @@ Botman.LandLayer.prototype.draw = function() {
 
 			var square_mesh = new THREE.Mesh( geometry, material );
 			square_mesh.receiveShadow = true;
+			//square_mesh.castShadow = true;
 			land.add( square_mesh );
 		}
 	}
@@ -281,9 +282,6 @@ Botman.LandLayer.prototype.draw = function() {
 	floor.position.z = this.get_center_z();
 	floor.position.y = -this._highest_point / 2;
 	land.add( floor );
-
-	// Shadows
-	//land.receiveShadow = true;
 
 	// Update reference
 	this._land = land;
