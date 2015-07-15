@@ -1,10 +1,14 @@
 
-
 - paper texture using perlin noise. apply to all of the things.
+
+- add skydome and create gradient background
+
+- look into having scene cast a floor shadow. horizon light?
 
 - dof and tiltshift
 
-- look into having scene cast a floor shadow. horizon light?
+- keyboard steering/navigation
+
 
 - land-layer: remove magic numbers, turn them into options, such as colours and size
 
@@ -12,6 +16,4 @@
 
 - rocks and tufts of grass
 
-- keyboard steering/navigation
 
-- add skydome and create gradient background
