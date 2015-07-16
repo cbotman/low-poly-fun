@@ -1,6 +1,7 @@
 
 - paper texture using perlin noise. apply to all of the things.
 
+
 - add skydome and create gradient background
 
 - look into having scene cast a floor shadow. horizon light?

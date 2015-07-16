@@ -22,7 +22,7 @@ Botman.LandLayer.default_options = {
 	color_map: [[0xD8D6A3]]
 };
 
-Botman.LandLayer.prototype.compute_surface_points = function( highest_point ) {
+Botman.LandLayer.prototype.compute_surface_points = function( desired_highest_point ) {
 
 	/**
 	 * Settled on a 5 step process.
@@ -78,7 +78,8 @@ Botman.LandLayer.prototype.compute_surface_points = function( highest_point ) {
 
 	// Lower all points by their minimum and scale to be between 0 and X
 	this._highest_point -= min;
-	var scale = ( highest_point / this._highest_point );
+	var scale = ( desired_highest_point / this._highest_point );
+	this._highest_point *= scale;
 	for ( var x = 0; x < points.length; x++ ) {
 
 		for ( var y = 0; y < points[x].length; y++ ) {
@@ -87,8 +88,8 @@ Botman.LandLayer.prototype.compute_surface_points = function( highest_point ) {
 			points[x][y] *= scale;
 		}
 	}
-	
-	// Finally, smooth out any crazy spikes.
+
+	// Smooth out any crazy spikes.
 	var smoothed_points = [];
 	this._highest_point = 0;
 	for ( var x = 0; x < points.length; x++ ) {
@@ -133,7 +134,28 @@ Botman.LandLayer.prototype.compute_surface_points = function( highest_point ) {
 	}
 	points = smoothed_points;
 
-	this._surface_points = points;
+	// Sanity check. If less than say X% of points are at least 50% of the target height, restart.
+	var passes = 0;
+	var pass_mark = Math.ceil( ( points.length * points[0].length ) / 100 ) * 2;
+	for ( var x = 0; x < points.length; x++ ) {
+
+		for ( var y = 0; y < points[x].length; y++ ) {
+
+			if ( points[x][y] > ( desired_highest_point / 2 ) ) {
+
+				passes++;
+			}
+		}
+	}
+	if ( passes <= pass_mark ) {
+
+		//console.log( 'recalc' );
+		this.compute_surface_points( desired_highest_point );
+	}
+	else {
+
+		this._surface_points = points;
+	}
 };
 
 Botman.LandLayer.prototype.get_width_x = function() {
