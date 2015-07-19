@@ -205,6 +205,7 @@ Botman.Main.prototype.recreate = function() {
 	this.land_layer = new Botman.LandLayer( {
 		tile_width_x: 10,
 		tile_width_z: 10,
+		target_highest_point: 50,
 		color_map: [
 			[0xFFFFFF],
 			[0x705A3D],
@@ -214,7 +215,7 @@ Botman.Main.prototype.recreate = function() {
 			[0xD6D177]
 		]
 	} );
-	this.land_layer.compute_surface_points( 50 );
+	this.land_layer.compute_surface_points();
 	var land = this.land_layer.draw();
 	land.name = 'land';
 	land.translateX( this.land_layer.get_center_x() * -1 );
@@ -229,5 +230,13 @@ Botman.Main.prototype.recreate = function() {
 	trees.name = 'trees';
 	this.scene.add( trees );
 
+	// Paper texture 
+	var paper_texture = new Botman.PaperTexture( {
+		width: 64, // TODO: base width on land_layer width
+		depth: 64, 
+		height: 50
+	} );
+	paper_texture.apply_to( land );
+	
 	this.render();
 };

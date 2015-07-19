@@ -1,6 +1,14 @@
 
 - paper texture using perlin noise. apply to all of the things.
 
+	- correct uv maps for land geoms
+	
+	- get values from 3d perlin model
+	
+	- configure/adjust
+	
+	- add uvs/texture to sides, base and trees
+	
 
 - add skydome and create gradient background
 

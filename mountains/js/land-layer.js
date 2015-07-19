@@ -9,6 +9,7 @@ Botman.LandLayer = function( options ) {
 	this._color_map = options.color_map;
 	this._tile_width_x = options.tile_width_x;
 	this._tile_width_z = options.tile_width_z;
+	this._target_highest_point = options.target_highest_point;
 	this._surface_points = [];
 	this._highest_point = 0;
 	this._land = null;
@@ -17,12 +18,13 @@ Botman.LandLayer = function( options ) {
 Botman.LandLayer.default_options = {
 	tile_width_x: 10,
 	tile_width_z: 10,
+	target_highest_point: 50,
 	// Colours for surface. The row is deterimed by each face's average height, then a 
 	// column is selected randomly to create variation. (Not really using, as doesn't look great)
 	color_map: [[0xD8D6A3]]
 };
 
-Botman.LandLayer.prototype.compute_surface_points = function( desired_highest_point ) {
+Botman.LandLayer.prototype.compute_surface_points = function() {
 
 	/**
 	 * Settled on a 5 step process.
@@ -78,7 +80,7 @@ Botman.LandLayer.prototype.compute_surface_points = function( desired_highest_po
 
 	// Lower all points by their minimum and scale to be between 0 and X
 	this._highest_point -= min;
-	var scale = ( desired_highest_point / this._highest_point );
+	var scale = ( this._target_highest_point / this._highest_point );
 	this._highest_point *= scale;
 	for ( var x = 0; x < points.length; x++ ) {
 
@@ -141,7 +143,7 @@ Botman.LandLayer.prototype.compute_surface_points = function( desired_highest_po
 
 		for ( var y = 0; y < points[x].length; y++ ) {
 
-			if ( points[x][y] > ( desired_highest_point / 2 ) ) {
+			if ( points[x][y] > ( this._target_highest_point / 2 ) ) {
 
 				passes++;
 			}
@@ -150,7 +152,7 @@ Botman.LandLayer.prototype.compute_surface_points = function( desired_highest_po
 	if ( passes <= pass_mark ) {
 
 		//console.log( 'recalc' );
-		this.compute_surface_points( desired_highest_point );
+		this.compute_surface_points( this._target_highest_point );
 	}
 	else {
 
@@ -231,10 +233,20 @@ Botman.LandLayer.prototype.draw = function() {
 			geometry.vertices.push( new THREE.Vector3( east_x, south_east_y, south_z ) ); // south-east
 			geometry.faces.push( new THREE.Face3( 1, 2, 0 ) ); // sw, ne, nw
 			geometry.faces.push( new THREE.Face3( 1, 3, 2 ) ); // sw, se, ne
+			// add uvs
+			geometry.faceVertexUvs[ 0 ].push( [
+				new THREE.Vector2( 0, 0 ),
+				new THREE.Vector2( 0, 1 ),
+				new THREE.Vector2( 0.5, 1 ),
+			] );
+			geometry.faceVertexUvs[ 0 ].push( [
+				new THREE.Vector2( 0, 0 ),
+				new THREE.Vector2( 0, 1 ),
+				new THREE.Vector2( 0.5, 1 ),
+			] );
 			geometry.computeFaceNormals();
-			
-			//this._map_surface_color( geometry.faces[0], ( south_west_y + north_east_y + north_west_y ) / 3 );
-			//this._map_surface_color( geometry.faces[1], ( south_west_y + south_east_y + north_east_y ) / 3 );
+			geometry.computeVertexNormals();
+			geometry.computeTangents();
 			
 			this._map_surface_color( geometry.faces[0], Math.max( south_west_y, north_east_y, north_west_y ) );
 			this._map_surface_color( geometry.faces[1], Math.max( south_west_y, south_east_y, north_east_y ) );
