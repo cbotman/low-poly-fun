@@ -237,12 +237,12 @@ Botman.LandLayer.prototype.draw = function() {
 			geometry.faceVertexUvs[ 0 ].push( [
 				new THREE.Vector2( 0, 0 ),
 				new THREE.Vector2( 0, 1 ),
-				new THREE.Vector2( 0.5, 1 ),
+				new THREE.Vector2( 1, 0 ),
 			] );
 			geometry.faceVertexUvs[ 0 ].push( [
 				new THREE.Vector2( 0, 0 ),
 				new THREE.Vector2( 0, 1 ),
-				new THREE.Vector2( 0.5, 1 ),
+				new THREE.Vector2( 1, 1 ),
 			] );
 			geometry.computeFaceNormals();
 			geometry.computeVertexNormals();

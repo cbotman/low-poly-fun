@@ -1,11 +1,18 @@
 
+- seeding
+
+	- on load, set a random seed
+	
+	- write url to initial seed so can be shared
+	
+	- on load, if seed set in url, restore
+
+	
 - paper texture using perlin noise. apply to all of the things.
 
-	- correct uv maps for land geoms
-	
-	- get values from 3d perlin model
-	
-	- configure/adjust
+	- probably easier to calculate each texture at time of creating polygon. can make the texture
+		the size needed. just means need to go point in world space. alternatively, don't suppose 
+		threejs takes a 3d texture?
 	
 	- add uvs/texture to sides, base and trees
 	

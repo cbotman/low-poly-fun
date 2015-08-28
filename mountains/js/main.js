@@ -77,8 +77,8 @@ Botman.Main.prototype.init = function() {
 	renderer.setClearColor( 0x555555, 1 );
 
 	// Shadows
-	renderer.shadowMapEnabled = true;
-	renderer.shadowMapType = THREE.PCFSoftShadowMap;
+	renderer.shadowMap.enabled = true;
+	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 	//
 	// Container
@@ -232,8 +232,8 @@ Botman.Main.prototype.recreate = function() {
 
 	// Paper texture 
 	var paper_texture = new Botman.PaperTexture( {
-		width: 64, // TODO: base width on land_layer width
-		depth: 64, 
+		width: 160, // TODO: base width on land_layer width
+		depth: 160, 
 		height: 50
 	} );
 	paper_texture.apply_to( land );
