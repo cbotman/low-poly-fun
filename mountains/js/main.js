@@ -77,8 +77,16 @@ Botman.Main.prototype.init = function() {
 	renderer.setClearColor( 0x555555, 1 );
 
 	// Shadows
-	renderer.shadowMap.enabled = true;
-	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+	if ( renderer.shadowMap ) {
+
+		renderer.shadowMap.enabled = true;
+		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+	}
+	else {
+
+		renderer.shadowMapEnabled = true;
+		renderer.shadowMapType = THREE.PCFSoftShadowMap;
+	}
 
 	//
 	// Container
@@ -188,10 +196,21 @@ Botman.Main.prototype.update = function() {
 	this.stats.update();
 };
 
-Botman.Main.prototype.recreate = function() {
+Botman.Main.prototype.recreate = function( seed ) {
 
 	// Ensure initiated
 	this.init();
+
+	// Generate new seed unless one was provided and set the URL appropriately
+	if ( typeof seed === 'undefined' || seed === -1 || seed === '' ) {
+
+		seed = Botman.Util.random_int( 1, 233280 );
+	}
+	Math.seed = parseInt( seed );
+	if ( window.history && window.history.replaceState ) {
+
+		window.history.replaceState( {}, document.title, '?seed=' + seed );
+	}
 
 	// Clear existing world, if there is one. Don't want to reset the camera position, etc.
 	this.scene.remove( this.scene.getObjectByName( 'land' ) );

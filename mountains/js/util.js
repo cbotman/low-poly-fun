@@ -111,3 +111,15 @@ Botman.Util.diamond_square = function( side_length, seed, variation ) {
 	
 	return map;
 };
+
+/**
+ * Source http://stackoverflow.com/a/901144/127352
+ * @param name
+ * @returns {string}
+ */
+Botman.Util.getParameterByName = function(name) {
+	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+		results = regex.exec(location.search);
+	return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+};
