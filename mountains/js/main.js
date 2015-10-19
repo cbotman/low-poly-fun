@@ -209,7 +209,14 @@ Botman.Main.prototype.recreate = function( seed ) {
 	Math.seed = parseInt( seed );
 	if ( window.history && window.history.replaceState ) {
 
-		window.history.replaceState( {}, document.title, '?seed=' + seed );
+		try {
+		
+			window.history.replaceState( {}, document.title, '?seed=' + seed );
+		}
+		catch ( exception ) {
+		
+			console.log( exception );
+		}
 	}
 
 	// Clear existing world, if there is one. Don't want to reset the camera position, etc.
